@@ -14,6 +14,7 @@ export class ProductDto {
   @IsNotEmpty()
   description: string;
 
+  @ApiProperty()
   @IsNumber()
   quantity: number;
 }
