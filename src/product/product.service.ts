@@ -1,6 +1,6 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { GetProductDto, InsertProductDto } from './dto/product.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { createPaginator } from 'prisma-pagination';
 import { Prisma } from '@prisma/client';
 
