@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -33,13 +33,16 @@ export class AuthService {
       throw new HttpException('Email already taken', 400);
     }
 
-    const newUser = await this.createUser(
+    const { password: _, ...user } =await this.createUser(
       email,
       password,
       firstName,
       lastName,
       phone,
     );
+
+    return user;
+    
   }
 
   async login(user: any) {
