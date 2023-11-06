@@ -1,11 +1,26 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { GetProductDto, InsertProductDto } from './dto/product.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { createPaginator } from 'prisma-pagination';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
-  getProducts() {
-    return this.prisma.product.findMany();
+  getProducts(page: number, perPage: number) {
+    const paginate = createPaginator({ perPage });
+
+    return paginate<GetProductDto, Prisma.ProductFindManyArgs>(
+      this.prisma.product,
+      {
+        where: {},
+        orderBy: {
+          id: 'asc',
+        },
+      },
+      {
+        page,
+      },
+    );
   }
 
   async getProductById(id: number): Promise<GetProductDto> {
@@ -13,7 +28,6 @@ export class ProductService {
       const product = await this.prisma.product.findUnique({
         where: { id },
       });
-      console.log(product);
       return product;
     } catch (error) {
       if (error.code === 'P2025') {
