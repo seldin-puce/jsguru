@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { ProductModule } from './product/product.module';
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionsFilter } from './common/filters/exception.filter';
 
 @Module({
   imports: [
@@ -14,6 +16,10 @@ import { ProductModule } from './product/product.module';
     ConfigModule.forRoot({ isGlobal: true }),
     ProductModule,
   ],
-  providers: [AuthService],
+  providers: [AuthService,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },],
 })
 export class AppModule {}

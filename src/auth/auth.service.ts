@@ -1,15 +1,13 @@
 import {
-  ForbiddenException,
+  HttpException,
   Injectable,
   Logger,
-  NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RegisterDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
-import { EmailTakenException } from './exception/email-taken-exception';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +30,7 @@ export class AuthService {
     const foundUser = await this.prisma.user.findUnique({ where: { email } });
 
     if (foundUser) {
-      throw new EmailTakenException();
+      throw new HttpException('Email already taken', 400);
     }
 
     const newUser = await this.createUser(
@@ -60,12 +58,12 @@ export class AuthService {
       where: { email: username },
     });
     if (!user || !user.refreshToken)
-      throw new ForbiddenException('Access Denied');
+    throw new HttpException('Access Denied', 403);
     const refreshTokenMatches = await bcrypt.compare(
       refreshToken,
       user.refreshToken,
     );
-    if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
+    if (!refreshTokenMatches) throw new HttpException('Access Denied', 403);
     const { accessToken } = await this.generateTokens(
       user.id,
       user.email,
@@ -77,7 +75,7 @@ export class AuthService {
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.getUserByEmail(username);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new HttpException('User not found', 404);
     }
     const isPasswordValid = await bcrypt.compare(pass, user.password);
     if (!isPasswordValid) {

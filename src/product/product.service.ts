@@ -25,8 +25,9 @@ export class ProductService {
       }
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new NotFoundException(
+        throw new HttpException(
           `Product with ID ${id} not found or doesn't meet the condition.`,
+            404,
         );
       }
       console.error(`Error deleting product: ${error.message}`);
@@ -58,7 +59,7 @@ export class ProductService {
       return product;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new NotFoundException(`Product with ID ${id} not found`);
+        throw new HttpException(`Product with ID ${id} not found`, 404);
       }
       throw error;
     }
