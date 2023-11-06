@@ -31,8 +31,8 @@ export class AuthController {
   })
   @SkipAuth()
   @Post('/user/register')
-  signUp(@Body() signUpDto: RegisterDto) {
-    return this.authService.register(signUpDto);
+  signUp(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
   }
 
   @ApiOperation({
