@@ -21,6 +21,9 @@ export class ProductDto {
 export class InsertProductDto extends ProductDto {}
 
 export class GetProductDto extends ProductDto {
+  @ApiProperty()
   id: number;
+
+  @ApiProperty()
   userId: number;
 }
