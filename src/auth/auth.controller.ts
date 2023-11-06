@@ -7,7 +7,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignInDto, SignUpDto } from './dto/auth.dto';
+import { LoginDto, RegisterDto } from './dto/auth.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { SkipAuth } from '../common/decorators/skip-auth';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -15,11 +15,11 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { IGetUserAuthInfoRequest } from './interface/get-user-auth-info.interface';
 
 @ApiTags('auth')
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOperation({ summary: 'Sign up' })
+  @ApiOperation({ summary: 'Register' })
   @ApiResponse({
     status: 201,
     description: 'Created',
@@ -30,16 +30,16 @@ export class AuthController {
     },
   })
   @SkipAuth()
-  @Post('signup')
-  signUp(@Body() signUpDto: SignUpDto) {
-    return this.authService.signUp(signUpDto);
+  @Post('/user/register')
+  signUp(@Body() signUpDto: RegisterDto) {
+    return this.authService.register(signUpDto);
   }
 
   @ApiOperation({
-    summary: 'Sign in',
+    summary: 'Login',
   })
   @ApiBody({
-    type: SignInDto,
+    type: LoginDto,
   })
   @ApiResponse({
     status: 200,
@@ -50,10 +50,10 @@ export class AuthController {
     },
   })
   @SkipAuth()
-  @Post('signin')
+  @Post('/user/login')
   @UseGuards(LocalAuthGuard)
   signIn(@Request() req) {
-    return this.authService.signIn(req.user);
+    return this.authService.login(req.user);
   }
 
   @ApiOperation({
@@ -68,7 +68,7 @@ export class AuthController {
     },
   })
   @SkipAuth()
-  @Post('refresh-token')
+  @Post('auth/refresh-token')
   refreshAccessToken(@Body('refreshToken') refreshToken: string) {
     return this.authService.refreshToken(refreshToken);
   }

@@ -14,7 +14,7 @@ export class AuthDto {
 }
 
 
-export class SignUpDto extends AuthDto {
+export class RegisterDto extends AuthDto {
     @ApiProperty()
     @IsNotEmpty()
     firstName: string;
@@ -28,7 +28,7 @@ export class SignUpDto extends AuthDto {
     phoneNumber: string;
 }
 
-export class SignInDto extends AuthDto { }
+export class LoginDto extends AuthDto { }
 
 
 

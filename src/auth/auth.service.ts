@@ -7,7 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { SignUpDto } from './dto/auth.dto';
+import { RegisterDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 import { EmailTakenException } from './exception/email-taken-exception';
 
@@ -21,7 +21,7 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async signUp(authDto: SignUpDto) {
+  async register(authDto: RegisterDto) {
     const {
       email,
       password,
@@ -42,13 +42,9 @@ export class AuthService {
       lastName,
       phone,
     );
-
-    const tokens = await this.generateTokens(newUser.id, newUser.email, phone);
-    await this.updateRefreshToken(newUser.id, tokens.refreshToken);
-    return tokens;
   }
 
-  async signIn(user: any) {
+  async login(user: any) {
     const tokens = await this.generateTokens(user.id, user.email, user.phone);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     this.logger.log('JWT issued for:', user);
