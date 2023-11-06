@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -48,5 +49,23 @@ export class ProductController {
     @Query('perPage') perPage: number = 10,
   ): Promise<PaginatedOutputDto<GetProductDto>> {
     return this.productService.getProducts(page, perPage);
+  }
+
+  @ApiOperation({ summary: 'Delete product' })
+  @ApiResponse({
+    status: 200,
+    description: 'Deleted',
+    schema: {
+      example: {
+        message: 'Product deleted successfully',
+      },
+    },
+  })
+  @Delete(':id')
+  delete(
+    @Request() req,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<boolean> {
+    return this.productService.deleteProduct(id, req.user);
   }
 }
